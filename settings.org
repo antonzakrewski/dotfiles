@@ -1,0 +1,1419 @@
+* Finished
+** Package Management
+#+begin_src emacs-lisp
+(require 'package)
+;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/") t)
+(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+(add-to-list 'package-archives '("tromey" . "https://tromey.com/elpa/"))
+;; (package-initialize)
+;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(require 'use-package)
+(setq use-package-always-ensure t)
+#+end_src
+*** Automatic Update
+#+begin_src elisp
+(use-package auto-package-update)
+;; (auto-package-update-maybe)
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+ #+end_src
+
+** Keybindings
+*** Escape
+ - Make ESC quit prompts
+ #+begin_src emacs-lisp
+ (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+ #+end_src
+*** Movement
+#+begin_src emacs-lisp
+(use-package evil
+    :bind (
+        ;; movement:
+            ;; words
+                :map evil-normal-state-map ("u" . evil-backward-WORD-begin)
+                :map evil-normal-state-map ("d" . evil-forward-word-begin)
+                :map evil-normal-state-map ("*" . evil-backward-word-end)
+                :map evil-normal-state-map ("?" . evil-forward-word-end)
+                :map evil-motion-state-map ("u" . evil-backward-WORD-begin)
+                :map evil-motion-state-map ("d" . evil-forward-word-begin)
+                :map evil-motion-state-map ("*" . evil-backward-word-end)
+                :map evil-motion-state-map ("?" . evil-forward-word-end)
+                :map evil-visual-state-map ("u" . evil-backward-WORD-begin)
+                :map evil-visual-state-map ("d" . evil-forward-word-begin)
+                :map evil-visual-state-map ("*" . evil-backward-word-end)
+                :map evil-visual-state-map ("?" . evil-forward-word-end)
+            ;; search regex
+                ;; :map evil-normal-state-map ("g" . evil-search-next)
+                ;; :map evil-normal-state-map ("G" . evil-search-previous)
+                ;; :map evil-normal-state-map ("SPC" . evil-search-forward)
+                :map evil-normal-state-map ("SPC" . swiper)
+                :map evil-normal-state-map ("0" . evil-search-backward)
+                :map evil-motion-state-map ("c" . evil-search-next)
+                :map evil-motion-state-map ("C" . evil-search-prev)
+                :map evil-motion-state-map ("SPC" . evil-search-forward)
+                :map evil-motion-state-map ("0" . evil-search-backward)
+            ;; search char
+                :map evil-normal-state-map ("w" . evil-find-char)
+                :map evil-normal-state-map ("p" . evil-find-char-backward)
+                :map evil-normal-state-map ("\"" . evil-repeat-find-char)
+                :map evil-normal-state-map ("%" . evil-repeat-find-char-reverse)
+                :map evil-motion-state-map ("w" . evil-find-char)
+                :map evil-motion-state-map ("p" . evil-find-char-backward)
+                :map evil-motion-state-map ("\"" . evil-repeat-find-char)
+                :map evil-motion-state-map ("%" . evil-repeat-find-char-reverse)
+            ;; line
+                :map evil-normal-state-map ("T" . evil-beginning-of-line)
+                :map evil-normal-state-map ("R" . evil-end-of-line)
+                :map evil-motion-state-map ("N" . evil-beginning-of-line)
+                :map evil-motion-state-map ("S" . evil-end-of-line)
+            ;; whole
+                :map evil-normal-state-map ("Ö" . evil-goto-line)
+                :map evil-normal-state-map ("öö" . evil-goto-first-line)
+                :map evil-motion-state-map ("Ö" . evil-goto-line)
+                :map evil-motion-state-map ("öö" . evil-goto-first-line)
+            ;; page
+                :map evil-motion-state-map ("-" . evil-scroll-page-down)
+                :map evil-motion-state-map (")" . evil-scroll-page-up)
+))
+#+end_src
+
+*** Operators
+#+begin_src emacs-lisp
+(use-package evil
+    :bind (
+           ;; operator
+
+               ;; delete
+                   :map evil-normal-state-map ("o" . evil-delete )
+                   :map evil-normal-state-map ("O" . evil-delete-line )
+                   :map evil-visual-state-map ("o" . evil-delete )
+                   :map evil-visual-state-map ("O" . evil-delete-line )
+               ;; yank
+                   :map evil-normal-state-map ("." . evil-yank )
+                   :map evil-normal-state-map ("•" . evil-yank-line )
+                   :map evil-visual-state-map ("." . evil-yank )
+                   :map evil-visual-state-map ("•" . evil-yank-line )
+               ;; substitute
+                   :map evil-normal-state-map ("k" . evil-substitute )
+                   :map evil-visual-state-map ("k" . evil-substitute )
+               ;; replacement
+                  :map evil-normal-state-map ("l" . evil-replace )
+                  :map evil-normal-state-map ("L" . evil-replace-state )
+                  :map evil-visual-state-map ("l" . evil-replace )
+                  :map evil-visual-state-map ("L" . evil-replace-state )
+           ;; edit
+               ;; append
+                   :map evil-normal-state-map ("a" . evil-append )
+                   :map evil-normal-state-map ("A" . evil-append-line )
+                   :map evil-visual-state-map ("a" . evil-append )
+                   :map evil-visual-state-map ("A" . evil-append-line )
+               ;; insert
+                   ;;:map evil-normal-state-map ("i" . evil-insert )
+                   ;;:map evil-normal-state-map ("I" . evil-insert-line )
+
+
+               ;; change
+                   ;; :map evil-normal-state-map ("i" . evil-change)
+                   ;; :map evil-normal-state-map ("I" . evil-change-line)
+                   ;; :map evil-normal-state-map ("…" . evil-change-whole-line)
+                   :map evil-visual-state-map ("e" . evil-change )
+                   :map evil-visual-state-map ("E" . evil-change-line )
+                   :map evil-visual-state-map ("…" . evil-change-whole-line )
+                   :map evil-normal-state-map ("e" . evil-change )
+                   :map evil-normal-state-map ("E" . evil-change-line )
+                   :map evil-normal-state-map ("…" . evil-change-whole-line )
+
+                   :map evil-normal-state-map ("X" . evil-downcase )
+                   :map evil-visual-state-map ("X" . evil-downcase )
+                   :map evil-normal-state-map ("Q" . evil-upcase )
+                   :map evil-visual-state-map ("Q" . evil-upcase )
+                   :map evil-normal-state-map ("|" . evil-indent )
+                   :map evil-visual-state-map ("|" . evil-indent )
+                   :map evil-normal-state-map ("ℵ" . evil-invert-case )
+                   :map evil-visual-state-map ("ℵ" . evil-invert-case )
+
+                   :map evil-normal-state-map ("ä" . evil-invert-char )
+                   :map evil-visual-state-map ("ä" . evil-invert-char )
+
+                   :map evil-visual-state-map ("j" . comment-line)
+                   :map evil-normal-state-map ("j" . comment-line)
+
+                   :map evil-normal-state-map ("v" . transpose-chars )  
+
+))
+#+end_src
+*** Insert
+#+begin_src emacs-lisp
+
+(use-package evil
+    :bind (
+                   ;; :map evil-normal-state-map ("a" . evil-insert)
+                   ;; :map evil-normal-state-map ("A" . evil-insert-line )
+                   ;; :map evil-normal-state-map ("/" . evil-insert-resume )
+
+;; append
+                   ;; :map evil-normal-state-map ("e" . evil-append)
+                   ;; :map evil-normal-state-map ("E" . evil-append-line )
+                   ;; :map evil-normal-state-map ("{" . evil-insert-resume )
+
+;; append
+                   ;; :map evil-normal-state-map ("i" . evil-change)
+                   ;; :map evil-normal-state-map ("I" . evil-change-line )
+                   ;; :map evil-normal-state-map ("}" . evil-insert-resume )
+
+               ;; open line
+                   :map evil-normal-state-map ("h" . evil-open-below )
+                   :map evil-normal-state-map ("H" . evil-open-above )
+
+
+                   :map evil-normal-state-map ("\\" . open-line-below )
+                   :map evil-visual-state-map ("\\" . open-line-below )
+                   :map evil-normal-state-map ("⊂" . open-line )
+                   :map evil-visual-state-map ("⊂" . open-line )
+
+))
+#+end_src
+    
+*** Search
+#+begin_src emacs-lisp
+(use-package evil
+    :bind (
+                :map evil-normal-state-map ("SPC" . swiper)
+                :map evil-normal-state-map ("0" . evil-search-backward)
+                :map evil-motion-state-map ("c" . evil-search-next)
+                :map evil-motion-state-map ("C" . evil-search-prev)
+                :map evil-motion-state-map ("SPC" . evil-search-forward)
+                :map evil-motion-state-map ("0" . evil-search-backward)
+))
+#+end_src
+*** Register
+#+begin_src emacs-lisp
+(use-package evil
+    :bind (
+            ;; paste
+                :map evil-normal-state-map ("," . evil-paste-after )
+                :map evil-normal-state-map ("–" . evil-paste-before )
+            ;; register
+                :map evil-normal-state-map ("]" . evil-use-register )
+)
+)
+#+end_src
+
+*** Marker
+#+begin_src emacs-lisp
+(use-package evil
+    :bind (
+
+           ;; Marks
+                   :map evil-normal-state-map ("@" . evil-set-marker )
+                   :map evil-normal-state-map ("f" . evil-goto-mark )
+                   :map evil-normal-state-map ("F" . evil-goto-mark-line )
+
+)
+)
+#+end_src
+*** Undo
+#+begin_src emacs-lisp
+(use-package evil
+    :bind (
+            :map evil-normal-state-map ("g" . undo-tree-undo )
+            :map evil-normal-state-map ("<" . undo-tree-redo)
+            :map evil-normal-state-map ("G" . undo-tree-visualize )
+            ;; :map evil-normal-state-map ("zg" .  undo-tree-visualize )
+
+)
+)
+#+end_src
+
+*** ORG roam
+#+begin_src emacs-lisp
+(use-package evil
+    :bind (
+                   :map evil-normal-state-map ("öv" . org-roam-node-find)
+                   :map evil-normal-state-map ("ör" . org-roam-node-random)
+                   :map evil-normal-state-map ("öo" . org-roam-buffer-toggle)
+                   :map evil-normal-state-map ("öV" . org-roam-capture)
+                   :map evil-normal-state-map ("öe" . org-open-at-point)
+                   :map evil-normal-state-map ("öa" . org-insert-link)
+                   :map evil-normal-state-map ("öA" . org-roam-node-insert)
+                   :map evil-normal-state-map ("öü" . org-publish-current-file)
+                   :map evil-normal-state-map ("önn" . org-roam-tag-add) 
+                   :map evil-normal-state-map ("öne" . org-roam-alias-add) 
+                   :map evil-normal-state-map ("ösn" . org-roam-tag-delete) 
+                   :map evil-normal-state-map ("öse" . org-roam-alias-delete) 
+                   ;; :map evil-normal-state-map ("öc" . org-roam-ui-mode)
+                   :map evil-normal-state-map ("ö," . org-ref-cite-insert-helm)
+                   ;; use deft
+))
+#+end_src
+*** fold    
+#+begin_src emacs-lisp
+(use-package evil
+    :bind (
+                   ;; fold
+                   :map evil-normal-state-map ("öu" . evil-open-fold)
+                   :map evil-normal-state-map ("öy" . evil-close-fold)
+                   :map evil-normal-state-map ("öd" . evil-close-fold)
+))
+#+end_src
+*** Visual
+#+begin_src emacs-lisp
+
+(use-package evil
+    :bind (
+
+ ;;          ;; visual
+                   :map evil-normal-state-map ("ü" . evil-visual-char )
+                   :map evil-normal-state-map ("Ü" . evil-visual-line )
+                   :map evil-normal-state-map ("~" . evil-visual-block )
+))
+#+end_src
+    
+*** misc 
+ #+begin_src emacs-lisp
+   (use-package evil
+       :bind (
+
+
+                   :map evil-normal-state-map ("z" . evil-execute-macro)
+                   :map evil-normal-state-map ("Z" . evil-record-macro)
+
+
+                   :map evil-normal-state-map ("m" . evil-ex)
+                  ;; :map evil-normal-state-map ("\'" . evil-ex)
+                  ;; todo -> repeat -> 2 timse ? or read into 
+                   :map evil-motion-state-map ("M" . evil-shell-command)
+   ;; ;; (define-key evil-motion-state-map "!" 'evil-shell-command)
+           ;; rng
+                   :map evil-normal-state-map (";" . evil-join )
+                   :map evil-visual-state-map (";" . evil-join )
+
+                   ;; TODO: Thu 04 Feb 18:39 2021 
+                   ;; multiple
+                   :map evil-normal-state-map ("#" . evil-shift-left)
+                   :map evil-normal-state-map ("$" . evil-shift-right )
+                   :map evil-visual-state-map ("#" . evil-shift-left)
+                   :map evil-visual-state-map ("$" . evil-shift-right )
+
+ ;;                 :map evil-visual-state-map ("B" . evil-delete-char evil-paste-after)
+
+                   ;; :map evil-visual-state-map ([escape] . evil-exit-visual-state)
+                   :map evil-visual-state-map ("h" . exchange-point-and-mark)
+
+       )
+   )
+
+ #+end_src
+
+*** swap chars
+
+** Visuals 
+*** Line Numbers
+ #+begin_src emacs-lisp
+  (global-display-line-numbers-mode)
+ (setq display-line-numbers-type 'visual)
+ #+end_src
+
+*** Theme
+ #+BEGIN_SRC emacs-lisp
+   (use-package atom-one-dark-theme )
+   (load-theme 'atom-one-dark t)
+ #+END_SRC
+**** Alternative Theme: Light - printed/tdsh-light 
+*** Statusline
+ #+BEGIN_SRC emacs-lisp
+ ;; (require 'nerd-fonts)
+  ;; (use-package doom-modeline
+    ;; :ensure t
+    ;; :init (doom-modeline-mode 1)
+    ;; :custom ((doom-modeline-height 15)))
+ #+END_SRC
+*** Emacs-UI
+**** Flash 
+ - make very small flash
+ - alternative: no flash: (setq ring-bell-function 'ignore)
+ #+begin_src emacs-lisp
+ (setq ring-bell-function
+     (lambda ()
+         (let ((orig-fg (face-foreground 'mode-line)))
+         (set-face-foreground 'mode-line "#F2804F")
+         (run-with-idle-timer 0.1 nil
+                                 (lambda (fg) (set-face-foreground 'mode-line fg))
+                                 orig-fg))))
+ #+end_src
+    
+**** Disable Screen
+ #+BEGIN_SRC emacs-lisp
+ (setq inhibit-startup-message t)
+ #+END_SRC
+**** Basic Emacs-UI
+ #+BEGIN_SRC emacs-lisp
+ (scroll-bar-mode -1)
+ (tool-bar-mode -1)
+ (tooltip-mode -1)
+ (menu-bar-mode -1)
+ #+END_SRC
+ - set fringes (space between line numbers and text) to 5
+ #+BEGIN_SRC emacs-lisp
+ (set-fringe-mode 10) 
+ #+END_SRC
+*** Font
+#+begin_src emacs-lisp
+(set-face-attribute 'default nil :font "office code pro" :height 100) ;; font6
+#+end_src
+
+# #+begin_src emacs-lisp
+# (use-package fira-code-mode
+  # :hook prog-mode)    
+# #+end_src
+
+
+*** Icons
+ #+begin_src emacs-lisp
+ (use-package all-the-icons)
+ ;; (all-the-icons-install-font)
+ #+end_src
+*** Org 
+**** Indent source
+  #+begin_src emacs-lisp
+  (setq org-edit-src-content-indentation '0)
+  #+end_src
+**** Bullets
+ #+begin_src emacs-lisp
+ (use-package org-bullets)
+ (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+ #+end_src
+** Org
+*** Org Journal
+ #+BEGIN_SRC emacs-lisp
+ (use-package org-journal
+    :ensure t
+    :defer t
+   :init
+ ) 
+ #+END_SRC
+**** Set Journal Config
+ - path to files     
+ #+BEGIN_SRC emacs-lisp
+ (setq org-journal-dir "~/org/journal/")
+ #+END_SRC
+ - format of year_week
+ - make files for weeks
+ #+begin_src emacs-lisp
+ (setq org-journal-file-format "%Y_%V.org")
+ (setq org-journal-file-type 'weekly)
+ (add-hook 'org-journal-mode-hook 'org-mode)
+ #+end_src
+
+**** Set weekly as type
+*** \LaTeX{} Preview
+#+begin_src emacs-lisp
+(setq org-preview-latex-image-directory "~/html/ltximg/")
+;; (setq org-preview-latex-default-process 'dvisvgm)
+(setq org-preview-latex-default-process 'xelatex)
+
+(add-to-list 'org-preview-latex-process-alist
+               '(xelatex :programs ("xelatex" "convert")
+                         :description "pdf > png"
+                         :message "you need to install the programs: xelatex and imagemagick."
+                         :image-input-type "pdf"
+                         :image-output-type "png"
+                         :image-size-adjust (1.0 . 1.0)
+                         :latex-compiler
+                         ("xelatex -interaction nonstopmode -output-directory %o %f")
+                         :image-converter
+                         ;; density should be "%D" and not 102
+                         ("convert -trim -density 145 -trim %f -quality 100 %O")))
+
+
+
+(setq org-latex-packages-alist '())
+(add-to-list 'org-latex-packages-alist '("" "enumitem" t))
+;; (add-to-list 'org-latex-packages-alist '("" "ulem" t))
+
+(add-to-list 'org-latex-packages-alist '("ngerman" "babel" t))
+;; (add-to-list 'org-latex-packages-alist '("T1" "fontenc" t))
+;; (add-to-list 'org-latex-packages-alist '("utf8x" "inputenc" t))
+
+(add-to-list 'org-latex-packages-alist '("" "pgfplots" t))
+
+(add-to-list 'org-latex-packages-alist '("" "mathtools" t))
+;; (add-to-list 'org-latex-packages-alist '("" "unicode-math" t))
+
+(add-to-list 'org-latex-packages-alist '("" "amsmath" t))
+(add-to-list 'org-latex-packages-alist '("" "amsmath" t))
+(add-to-list 'org-latex-packages-alist '("" "amssymb" t))
+(add-to-list 'org-latex-packages-alist '("" "amsthm" t))
+
+(add-to-list 'org-latex-packages-alist '("" "bbm" t))
+
+;; (add-to-list 'org-latex-packages-alist '("" "mhchem" t))
+;; (add-to-list 'org-latex-packages-alist '("" "chemmacros" t))
+
+(add-to-list 'org-latex-packages-alist '("" "graphicx" t))
+(add-to-list 'org-latex-packages-alist '("" "pdfpages" t))
+
+
+(add-to-list 'org-latex-packages-alist '("" "listings" t))
+(add-to-list 'org-latex-packages-alist '("" "biblatex" t))
+(add-to-list 'org-latex-packages-alist '("" "hyperref" t))
+
+(add-to-list 'org-latex-packages-alist '("" "color" t))
+(add-to-list 'org-latex-packages-alist '("" "xcolor" t))
+
+(add-to-list 'org-latex-packages-alist '("" "siunitx" t))
+(add-to-list 'org-latex-packages-alist '("" "tikz" t))
+(add-to-list 'org-latex-packages-alist '("" "circuitikz" t))
+(add-to-list 'org-latex-packages-alist '("" "fontenc" t))
+
+
+(add-to-list 'org-latex-packages-alist '("" "tikz-cd" t))
+
+(add-to-list 'org-latex-packages-alist '("" "multirow" t))
+(add-to-list 'org-latex-packages-alist '("" "multicol" t))
+
+;; (add-to-list 'org-latex-packages-alist '("" "tikz-uml" t))
+;; TODO TODO
+
+
+#+end_src
+    
+*** Automatic Compilation
+ #+begin_src emacs-lisp
+ (use-package org-fragtog)
+ ;; (add-hook 'org-mode-hook 'org-fragtog-mode)
+ (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+ #+end_src
+*** org latex
+*** org plot
+#+begin_src emacs-lisp
+(use-package gnuplot-mode)
+#+end_src
+
+** \LaTeX{}
+*** Symbols
+ #+begin_src emacs-lisp
+ (use-package latex-pretty-symbols)
+ #+end_src
+
+*** Bibliography
+**** helm-bibtex
+ #+begin_src emacs-lisp
+       ;; Spell checking (requires the ispell software)
+       (add-hook 'bibtex-mode-hook 'flyspell-mode)
+
+       ;; Change fields and format
+       (setq bibtex-user-optional-fields '(("keywords" "Keywords to describe the entry" "")
+                                           ("file" "Link to document file." ":"))
+             bibtex-include-OPTkey nil
+             bibtex-align-at-equal-sign t)
+       (setq-default fill-column 160)
+
+
+     (setq bib-files-directory (directory-files
+                                  (concat (getenv "HOME") "/org/zk/") t ".bib$")
+             pdf-files-directory (concat (getenv "HOME") "/org/zk/")
+             ;; bib-notes-directory (concat (getenv "HOME") "/org/bib/notes"))
+             bib-notes-directory (concat (getenv "HOME") "/org/zk"))
+
+         (use-package helm-bibtex
+             :config
+             (require 'helm-config)
+             (setq bibtex-completion-bibliography bib-files-directory
+                 bibtex-completion-library-path pdf-files-directory
+                bibtex-completion-pdf-field "File"
+                bibtex-completion-notes-path bib-notes-directory)
+               :bind
+               (("<menu>" . helm-command-prefix)
+                :map helm-command-map
+                ("b" . helm-bibtex)
+                ("<menu>" . helm-resume)
+           )
+       )
+ #+end_src
+**** org-ref
+ #+begin_src emacs-lisp
+
+     (use-package org-ref
+       :config
+       (setq org-ref-completion-library 'org-ref-helm-cite
+             org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
+             org-ref-default-bibliography bib-files-directory
+             org-ref-notes-directory bib-notes-directory))
+
+ ;; (setq reftex-default-bibliography '("~/org/zk/references.bib"))
+ ;; see org-ref for use of these variables
+   (setq org-ref-bibliography-notes "~/org/zk/references.org"
+         org-ref-default-bibliography '("~/org/zk/references.bib")
+         org-ref-pdf-directory "~/org/zk/")
+ #+end_src
+*** Auctex
+ #+begin_src emacs-lisp
+ (use-package tex-mode
+   :ensure auctex)
+ #+end_src
+**** math mode
+ #+begin_src emacs-lisp
+ (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+ #+end_src
+     
+**** compiler
+#+begin_src emacs-lisp
+(setq org-latex-to-pdf-process (list "latexmk -latexoption=\"-shell-escape\" -f -pdf %f"))
+#+end_src
+
+**** bad unicode
+#+begin_src emacs-lisp
+;; (add-to-list 'org-latex-packages-alist
+               ;; '("" "unicode-math" t
+                 ;; ("xelatex")))
+;; (add-to-list 'org-latex-packages-alist
+               ;; '("" "physics" t
+                 ;; ("xelatex")))
+#+end_src
+
+#+begin_src emacs-lisp
+(setq org-latex-compiler "xelatex")
+#+end_src
+
+
+*** fast compilation
+#+begin_src emacs-lisp
+#+end_src
+
+** misc
+ #+begin_src emacs-lisp
+(use-package evil)
+(evil-mode 1)
+(global-set-key (kbd "M-d") 'ace-window)
+ #+end_src
+**** Quickscope
+ #+begin_src emacs-lisp
+ ;; (add-to-list 'load-path "~/.emacs.d/packages/evil-quickscope")
+ (use-package evil-quickscope)
+ (global-evil-quickscope-always-mode 1)
+ #+end_src
+*** Tabs
+ - TODO -> fix
+ #+BEGIN_SRC emacs-lisp
+    ;; set default tab char's display width to 4 spaces
+ ;; (setq-default tab-width 4) ; emacs 23.1 to 26 default to 8
+
+  ;; set current buffer's tab char's display width to 4 spaces
+  ;; (setq tab-width 4)
+  ;; (setq-default indent-tabs-mode nil)
+  ;; (setq tab-width 4)
+  ;; (setq tab-stop-list (number-sequence 4 200 4))
+
+  ;; (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+  (show-paren-mode 1)
+ #+END_SRC
+*** Redo
+ #+begin_src elisp
+(use-package undo-tree)
+(global-undo-tree-mode 1)
+(defalias 'redo 'undo-tree-redo)
+(setq undo-tree-visualizer-diff 1)
+ #+end_src
+#+begin_src elisp
+(setq undo-tree-history-directory-alist '"~/.undo_history")
+(setq undo-tree-history-directory-alist '(("." . "~/.undo_history")))
+#+end_src
+
+** EXWM
+** yasnippet
+#+begin_src emacs-lisp
+(use-package yasnippet
+   ;; :bind ("🌹" . yas-expand)
+   :bind ("🌹" . yas-expand)
+   :bind ("❤"  . yas-prev-field)
+   ;;:bind ("🌱" . yas-next-field)
+   :bind ("🚩" . yas-next-field)
+)
+#+end_src
+
+       # :bind ("♥" . yas-expand)
+       # :bind ("ß" . yas-expand)
+       # :bind ("🌹" . yas-expand)
+#+begin_src emacs-lisp
+(setq yas-snippet-dirs
+    '("~/.emacs.d/plugins/yasnippet")
+)
+ (yas-global-mode 1)
+#+end_src
+*** minor modes
+**** tikz
+#+begin_src emacs-lisp
+(define-minor-mode tikz-mode
+    "test "
+    :lighter " tikz")
+#+end_src
+**** manim
+#+begin_src emacs-lisp
+(define-minor-mode manim-mode
+    "test "
+    :lighter " manim")
+#+end_src
+**** math ?
+**** tikz preview
+# #+begin_src elisp
+#   ;; GNU Emacs 26.3
+# ;; Org package version 20191118 (downloaded from https://orgmode.org/elpa/ repository)
+# ;;
+# ;; Copy-paste these commands into your init file. Make sure org package is loaded before executing them.
+
+# ;; --- Copy-paste from the next line ---
+# ;; This command creates a 'graphicsmagick' process and adds it to 'org-preview-latex-process-alist'.
+# ;; It compiles the .tex file with pdflatex, then creates the .png image from the .pdf file with GraphicsMagicks. 
+# (add-to-list 'org-preview-latex-process-alist '(graphicsmagick :programs ("latex" "gm")
+#                                                                :description "pdf > png"
+#                                                                :message "you need to install the programs: latex and graphicsmagick"
+#                                                                :use-xcolor t
+#                                                                :image-input-type "pdf"
+#                                                                :image-output-type "png"
+#                                                                :image-size-adjust (1.0 . 1.0)
+#                                                                :latex-compiler ("pdflatex -interaction nonstopmode -output-directory %o %f")
+#                                                                :image-converter ("gm convert -density %D -trim -antialias -quality 100 %f %O")))
+
+# ;; This command sets 'graphicsmagick' process for LaTeX previews in org-mode.
+# (setq org-preview-latex-default-process 'graphicsmagick)
+# #+end_src
+
+# ** Backups
+ #+begin_src emacs-lisp
+ (setq
+     backup-by-copying t      ; don't clobber symlinks
+     backup-directory-alist
+     '(("." . "~/.saves/"))    ; don't litter my fs tree
+     delete-old-versions t
+     kept-new-versions 6
+     kept-old-versions 2
+     version-control t)       ; use versioned backups
+ #+end_src
+** Zettelkasten
+*** Basic
+ #+BEGIN_SRC emacs-lisp
+  (setq org-roam-v2-ack t)
+    (use-package org-roam
+     :ensure t
+     :custom
+     (org-roam-directory "~/org/zk")
+
+  )
+
+    (org-roam-db-autosync-mode)
+
+ (setq org-roam-node-display-template
+      (concat "${title:*} "
+              (propertize "${tags:10}" 'face 'org-tag)))
+  ;; ¿(setq org-roam-directory "~/org/zk/")
+  ;; (add-hook 'after-init-hook 'org-roam-mode) 
+ ;; (add-hook 'after-init-hook 'org-roam-db-autosync-mode)
+    ;; (setq org-roam-db-update-method 'immediate)
+ #+END_SRC
+*** Buffer
+ - todo -> automatically enable 
+ #+begin_src emacs-lisp
+    ;; (org-roam)
+ ;; (add-hook 'after-init-hook 'org-roam-mode)
+ #+end_src
+*** org-roam-ui
+ #+begin_src emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/packages/org-roam-ui")
+   ;; (use-package 'org-roam-ui)
+   (require 'simple-httpd)
+ (setq org-roam-ui-follow nil)
+ #+end_src
+*** Bibtex
+ #+begin_src emacs-lisp
+ ;; what to do ??
+ (use-package org-roam-bibtex
+  :after org-roam
+   :load-path "~/.emacs.d/packages/org-roam-bibtex" ; Modify with your own path where you  cloned the repository
+   :config
+   (use-package org-ref)) 
+ #+end_src
+*** Publishing
+**** Basic
+ #+begin_src emacs-lisp
+ (require 'ox-publish)
+  (setq org-html-validation-link nil)
+   (setq my-publish-time 0)   ; see the next section for context
+   (defun roam-publication-wrapper (plist filename pubdir)
+     ;; (org-roam-graph)
+     (org-html-publish-to-html plist filename pubdir)
+     (setq my-publish-time (cadr (current-time))))
+
+    (setq org-publish-project-alist
+       '(
+	("web-norec"
+	:base-directory "~/org/zk"
+	:base-extension "org"
+	:publishing-directory "~/html"
+	:recursive f
+	:publishing-function math-roam-publication-wrapper
+	:headline-levels 4             ; t the default for this project.
+	:auto-preamble nil
+	:section-number nil
+	:table-of-contents nil
+	:with-toc nil
+	:with-latex t
+	:html-validation-link nil
+	)
+
+ 
+        ("git-norec"
+        :base-directory "~/org/zk"
+        :base-extension "org"
+        :publishing-directory "~/html"
+        :recursive f
+        :publishing-function math-roam-publication-wrapper
+        :headline-levels 4             ; t the default for this project.
+        :auto-preamble nil
+        :section-number nil
+        :table-of-contents nil
+        :with-toc nil
+        :with-latex t
+        :html-validation-link nil
+        )
+
+	("web-rec"
+	:base-directory "~/org/zk"
+	:base-extension "org"
+	:publishing-directory "~/html"
+	:recursive t
+	:publishing-function math-roam-publication-wrapper
+	:headline-levels 4             ; t the default for this project.
+	:auto-preamble nil
+	:section-number nil
+	:table-of-contents nil
+	:with-toc nil
+	:with-latex t
+	:html-validation-link nil
+	)
+
+	("zk-norec"
+	:base-directory "~/org/zk"
+	:base-extension "org"
+	:publishing-directory "~/html"
+	:recursive f
+	:publishing-function zk-roam-publication-wrapper
+	:headline-levels 4             ; t the default for this project.
+	:auto-preamble nil
+	:section-number nil
+	:table-of-contents nil
+	:with-toc nil
+	:with-latex t
+	:html-validation-link nil
+	)
+
+	("metamath-norec"
+	:base-directory "~/org/zk"
+	:base-extension "org"
+	:publishing-directory "~/html"
+	:recursive f
+	:publishing-function mm-roam-publication-wrapper
+	:headline-levels 4             ; t the default for this project.
+	:auto-preamble nil
+	:section-number nil
+	:table-of-contents nil
+	:with-toc nil
+	:with-latex t
+	:html-validation-link nil
+	)
+
+
+
+   ))
+
+**** math Wrapper
+#+begin_src emacs-lisp
+(defun math-roam-publication-wrapper (plist filename pubdir)
+  (require 'files)
+  (if (with-current-buffer (find-file-noselect filename)
+        (member "math" (org-roam-node-tags (org-roam-node-at-point))))
+      (progn (org-html-publish-to-html plist filename pubdir)
+             (setq my-publish-time (cadr (current-time))))))
+
+
+(defun zk-roam-publication-wrapper (plist filename pubdir)
+  (require 'files)
+  (if (with-current-buffer (find-file-noselect filename)
+        (member "Zettelkasten" (org-roam-node-tags (org-roam-node-at-point))))
+      (progn (org-html-publish-to-html plist filename pubdir)
+             (setq my-publish-time (cadr (current-time))))))
+
+(defun mm-roam-publication-wrapper (plist filename pubdir)
+  (require 'files)
+  (if (with-current-buffer (find-file-noselect filename)
+        (member "metamath" (org-roam-node-tags (org-roam-node-at-point))))
+      (progn (org-html-publish-to-html plist filename pubdir)
+             (setq my-publish-time (cadr (current-time))))))
+#+end_src
+**** Fixing Files
+ #+begin_src emacs-lisp
+ (defun my/org-id-update-org-roam-files ()
+   "Update Org-ID locations for all Org-roam files."
+   (interactive)
+   (org-id-update-id-locations (org-roam-list-files)))
+
+ (defun my/org-id-update-id-current-file ()
+   "Scan the current buffer for Org-ID locations and update them."
+   (interactive)
+   (org-id-update-id-locations (list (buffer-file-name (current-buffer)))))
+ #+end_src
+**** Backlinks
+#  #+begin_src emacs-lisp
+#  (defun hurricane//collect-backlinks-string (backend)
+#    (when (org-roam-node-at-point)
+#      (let* ((source-node (org-roam-node-at-point))
+#             (source-file (org-roam-node-file source-node))
+#             (nodes-in-file (--filter (s-equals? (org-roam-node-file it) source-file)
+#                                      (org-roam-node-list)))
+#             (nodes-start-position (-map 'org-roam-node-point nodes-in-file))
+#             ;; Nodes don't store the last position, so get the next headline position
+#             ;; and subtract one character (or, if no next headline, get point-max)
+#             (nodes-end-position (-map (lambda (nodes-start-position)
+#                                         (goto-char nodes-start-position)
+#                                         (if (org-before-first-heading-p) ;; file node
+#                                             (point-max)
+#                                           (call-interactively
+#                                            'org-forward-heading-same-level)
+#                                           (if (> (point) nodes-start-position)
+#                                               (- (point) 1) ;; successfully found next
+#                                             (point-max)))) ;; there was no next
+#                                       nodes-start-position))
+#             ;; sort in order of decreasing end position
+#             (nodes-in-file-sorted (->> (-zip nodes-in-file nodes-end-position)
+#                                        (--sort (> (cdr it) (cdr other))))))
+#        (dolist (node-and-end nodes-in-file-sorted)
+#          (-when-let* (((node . end-position) node-and-end)
+#                       (backlinks (--filter (->> (org-roam-backlink-source-node it)
+#                                                 (org-roam-node-file)
+#                                                 (s-contains? "private/") (not))
+#                                            (org-roam-backlinks-get node)))
+#                       (heading (format "\n\n%s Verlinkt von:\n"
+#                                        (s-repeat (+ (org-roam-node-level node) 1) "*")))
+#                       (properties-drawer ":PROPERTIES:\n:HTML_CONTAINER_CLASS: references\n:END:\n"))
+#            (goto-char end-position)
+#            (insert heading)
+#            (insert properties-drawer)
+#            (dolist (backlink backlinks)
+#              (let* ((source-node (org-roam-backlink-source-node backlink))
+#                     (source-file (org-roam-node-file source-node))
+#                     (properties (org-roam-backlink-properties backlink))
+#                     (outline (when-let ((outline (plist-get properties :outline)))
+#                                (when (> (length outline) 1)
+#                                  (mapconcat #'org-link-display-format outline " > "))))
+#                     (point (org-roam-backlink-point backlink))
+#                     (text (s-replace "\n" " " (org-roam-preview-get-contents
+#                                                source-file
+#                                                point)))
+#                     (reference (format "%s [[id:%s][%s]]\n%s\n%s\n\n"
+#                                        (s-repeat (+ (org-roam-node-level node) 2) "*")
+#                                        (org-roam-node-id source-node)
+#                                        (org-roam-node-title source-node)
+#                                        (if outline (format "%s (/%s/)"
+#                                                            (s-repeat (+ (org-roam-node-level node) 3) "*") outline) "")
+#                                        text))
+#                     (label-list (with-temp-buffer
+#                                   (insert text)
+#                                   (org-element-map (org-element-parse-buffer) 'footnote-reference
+#                                     (lambda (reference)
+#                                       (org-element-property :label reference)))))
+#                     (footnote-string-list
+#                        (with-temp-buffer
+#                          (insert-file-contents source-file)
+#                          (-map (lambda (label) (buffer-substring-no-properties
+#                                                 (nth 1 (org-footnote-get-definition label))
+#                                                 (nth 2 (org-footnote-get-definition label))))
+#                                label-list))))
+#                (-map (lambda (footnote-string) (insert footnote-string)) footnote-string-list)
+#                (insert reference))))))))
+
+#  (add-hook 'org-export-before-processing-hook 'hurricane//collect-backlinks-string)
+#  #+end_src
+# *** showing tags while search 
+#+begin_src emacs-lisp
+(setq org-roam-node-display-template
+      (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+#+end_src
+    
+*** template
+#+begin_src emacs-lisp
+(setq
+org-roam-capture-templates
+'(("d" "default" plain
+   "%?"
+   :if-new (file+head "%<%Y%m%d>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: ~/org/.zk_setup.org")
+   :unnarrowed t))
+)
+   ;; '(("d" "default" plain
+      ;; "%?"
+      ;; :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+SETUPFILE: ~/org/.zk_setup.org" "#+title: ${title}\n")
+      ;; :unnarrowed t)))
+#+end_src
+    
+
+
+** Ledger
+ #+begin_src emacs-lisp
+  (use-package ledger-mode
+   :ensure t
+
+    :init
+    (setq ledger-clear-whole-transaction 1)
+    :config
+    (add-to-list 'evil-emacs-state-modes 'ledger-report-mode)
+    :mode "\\.dat\\'")
+ #+end_src
+
+** Terminal
+#+begin_src emacs-lisp
+;; (add-to-list 'load-path "~/.emacs.d/packages/emacs-libvterm/")
+;; (require 'vterm)
+;; (use-package vterm)
+#+end_src
+   
+** Ivy
+#+BEGIN_SRC emacs-lisp
+(setq evil-want-C-i-jump nil)
+;; autocompletion: helm or ivy ?
+(use-package counsel)
+(use-package ivy
+     :diminish
+    :bind (("C-s" . swiper)
+            ;; TODO: Wed 03 Feb 22:26 2021 
+            ;; maybe -> wiper as space
+
+            :map ivy-minibuffer-map
+            ;; ("TAB" . ivy-alt-done)	
+            ("C-l" . ivy-alt-done)
+            ("C-j" . ivy-next-line)
+            ("C-k" . ivy-previous-line)
+            :map ivy-switch-buffer-map
+            ("C-k" . ivy-previous-line)
+            ("C-l" . ivy-done)
+            ("C-d" . ivy-switch-buffer-kill)
+            :map ivy-reverse-i-search-map
+            ("C-k" . ivy-previous-line)
+            ("C-d" . ivy-reverse-i-search-kill))
+    :config
+    (ivy-mode 1))
+#+END_SRC
+# TODO
+
+
+
+** company
+#+begin_src emacs-lisp
+(use-package company
+    :bind ("🌱" . company-complete)
+)
+(add-hook 'after-init-hook 'global-company-mode)
+#+end_src
+*** quickhelp
+#+begin_src emacs-lisp
+(use-package company-quickhelp)
+(company-quickhelp-mode)
+#+end_src
+*** ctags
+#+begin_src elisp
+(use-package company-ctags)
+(with-eval-after-load 'company
+  (company-ctags-auto-setup))
+#+end_src
+*** lang
+**** org
+#+begin_src emacs-lisp
+(use-package company-org-block
+  :ensure t
+  :custom
+  (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
+  :hook ((org-mode . (lambda ()
+                       (setq-local company-backends '(company-org-block))
+                       (company-mode +1)))))
+#+end_src
+
+
+**** python
+#+begin_src emacs-lisp
+(use-package company-jedi)
+(use-package jedi-core)
+(defun my/python-mode-hook ()
+  (add-to-list 'company-backends 'company-jedi))
+
+(add-hook 'python-mode-hook 'my/python-mode-hook)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package elpy
+    :bind
+    ;; :hook ((elpy-mode . flycheck-mode)
+    ;;        (elpy-mode . (lambda ()
+    ;;                       (set (make-local-variable 'company-backends)
+    ;;                            '((elpy-company-backend :with company-yasnippet))))))
+    :init
+    (elpy-enable)
+    :config
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    ; fix for MacOS, see https://github.com/jorgenschaefer/elpy/issues/1550
+    (setq elpy-shell-echo-output nil)
+    (setq elpy-rpc-python-command "python3")
+    (setq elpy-rpc-timeout 2))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package pydoc)
+(use-package numpydoc)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package eldoc)
+(add-hook 'python-mode-hook 'eldoc-box-hover-mode)
+(add-hook 'python-mode-hook 'eldoc-box-hover-at-point-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package lsp-pyright)
+#+end_src
+
+
+**** latex
+#+begin_src emacs-lisp
+(use-package company-math)
+(defun my-latex-mode-setup ()
+  (setq-local company-backends
+              (append '((company-math-symbols-latex))
+                      company-backends)))
+
+(add-hook 'tex-mode-hook 'my-latex-mode-setup)
+(add-hook 'TeX-mode-hook 'my-latex-mode-setup)
+
+(use-package company-auctex)
+(company-auctex-init)
+(use-package company-reftex)
+(use-package company-bibtex)
+(add-to-list 'company-backends 'company-bibtex)
+(setq company-bibtex-bibliography
+	'("~/org/zk/references.bib"))
+#+end_src
+
+
+
+**** org mode
+#+begin_src emacs-lisp
+(add-to-list 'company-backends 'company-capf)
+;; # (defun my-org-mode-hook ()
+;; #   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+;; # (add-hook 'org-mode-hook #'my-org-mode-hook)
+#+end_src
+
+# ** corfu
+# #+begin_src emacs-lisp
+# (use-package corfu
+#   :init
+#   (global-corfu-mode)
+# )
+# (setq corfu-auto t
+#       corfu-quit-no-match 'separator)
+# (add-to-list 'load-path "~/.emacs.d/packages/corfu-doc")
+# #+end_src
+
+# #+begin_src emacs-lisp
+# (require 'corfu-doc)
+# (add-hook 'corfu-mode-hook #'corfu-doc-mode)
+# #+end_src
+** eldoc
+#+begin_src emacs-lisp
+(defun rope-eldoc-function ()
+  (interactive)
+  (let* ((win-conf (current-window-configuration))
+         (resize-mini-windows nil)
+         (disable-python-trace t)
+         class fun args result-type
+         (flymake-message (python-flymake-show-help))
+         (initial-point (point))
+         (paren-range (let (tmp)
+                        (ignore-errors
+                          (setq tmp (vimpulse-paren-range 0 ?\( nil t))
+                          (if (and tmp (>= (point) (car tmp)) (<= (point) (cadr tmp)))
+                              tmp
+                            nil))))
+         (result (save-excursion
+                   ;; check if we on the border of args list - lparen or rparen
+                   (if paren-range
+                       (goto-char (car paren-range)))
+                   (call-interactively 'rope-show-doc)
+                   (set-buffer "*rope-pydoc*")
+                   (goto-char (point-min))
+                   (if (or (equal (point-max) 1)
+                           (not (re-search-forward "\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)(.*):" (point-at-eol) t))
+                           (and (current-message) (string-match-p "BadIdentifierError" (current-message))))
+                       nil
+                     (let (result)
+                       ;; check if this is class definition
+                       (if (looking-at "class \\([a-zA-Z_]+[a-zA-Z0-9_]*\\)(.*):")
+                           (progn
+                             (goto-char (point-at-eol))
+                             (re-search-forward (buffer-substring (match-beginning 1) (match-end 1)))))
+                       (goto-char (point-at-bol))
+                       (setq result (buffer-substring (point) (point-at-eol)))
+
+                       ;; check if exist better description of function
+                       (goto-char (point-at-eol))
+                       (string-match "\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)(.*)" result) ;get function name
+                       (if (re-search-forward (concat (match-string 1 result) "(.*)") nil t)
+                           (progn
+                             (goto-char (point-at-bol))
+                             (setq result (buffer-substring (point) (point-at-eol)))))
+
+                       ;; return result
+                       result
+                       ))))
+         (arg-position (save-excursion
+                         (if paren-range
+                             (count-matches "," (car paren-range) (point))))))
+    ;; save window configuration
+    (set-window-configuration win-conf)
+    ;; process main result
+    (if result
+        (progn
+          (setq result-type (nth 1 (split-string result "->")))
+          (setq result (nth 0 (split-string result "->")))
+          (setq result (split-string result "("))
+          (setq fun (nth 1 (split-string (nth 0 result) "\\.")))
+          (setq class (nth 0 (split-string (nth 0 result) "\\.")))
+          ;; process args - highlight current function argument
+          (setq args (nth 0 (split-string (nth 1 result) ")")))
+
+          ;; highlight current argument
+          (if args
+              (progn
+                (setq args (split-string args ","))
+                (setq args (let ((num -1))
+                             (mapconcat
+                              (lambda(x)(progn
+                                          (setq num (+ 1 num))
+                                          (if (equal num arg-position) (propertize x 'face 'eldoc-highlight-function-argument) x)))
+                              args
+                              ",")))))
+
+          ;; create string for type signature
+          (setq result
+                (concat
+                 (propertize "Signature: " 'face 'flymake-message-face)
+
+                 (if fun
+                     (concat (propertize (org-trim class) 'face 'font-lock-type-face)
+                             "."
+                             (propertize (org-trim fun) 'face 'font-lock-function-name-face))
+                   (propertize (org-trim class) 'face 'font-lock-function-name-face))
+
+                 " (" args ")"
+
+                 (if result-type
+                     (concat " -> " (org-trim result-type)))
+                 ))))
+
+    ;; create final result
+    (if (and (null flymake-message) (null result))
+        nil
+      (concat flymake-message
+              (if (and result flymake-message) "\n")
+              result))))
+
+(defvar disable-python-trace nil)
+
+(defadvice message(around message-disable-python-trace activate)
+  (if disable-python-trace
+      t
+    ad-do-it))
+
+(defface flymake-message-face
+  '((((class color) (background light)) (:foreground "#b2dfff"))
+    (((class color) (background dark))  (:foreground "#b2dfff")))
+  "Flymake message face")
+
+(defun python-flymake-show-help ()
+  (when (get-char-property (point) 'flymake-overlay)
+    (let ((help (get-char-property (point) 'help-echo)))
+      (if help
+          (format (concat (propertize "Error: " 'face 'flymake-message-face) "%s") help)))))
+#+end_src
+
+#+begin_src emacs-lisp
+(set (make-local-variable 'eldoc-documentation-function) 'rope-eldoc-function)
+#+end_src
+
+
+** gtd
+*** org agenda
+#+begin_src emacs-lisp
+(use-package org-super-agenda)
+#+end_src
+**** org agenda files
+#+begin_src emacs-lisp
+(setq org-directory "~/org")
+(setq org-agenda-files (list "nextaction.org" "inbox.org" "waiting.org" "repeating.org"))
+#+end_src
+**** only show first incident of repeating tasks
+#+begin_src emacs-lisp
+(setq org-agenda-show-future-repeats nil)
+#+end_src
+
+**** org agenda gropus
+#+begin_src emacs-lisp
+(let ((org-super-agenda-groups
+   '(
+        (:name "TODAY"
+             :time-grid t
+             :todo "TODAY")
+        (:name "Important"
+             :tag "bills"
+             :priority "A")
+)
+)
+))
+#+end_src
+
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c o") 'org-store-link)
+(global-set-key (kbd "C-c i") 'org-agenda)
+(global-set-key (kbd "C-c ,") 'org-capture)
+#+end_src
+#+begin_src emacs-lisp
+(setq org-default-notes-file "~/org/nextaction.org")
+(setq org-default-notes-file "~/org/inbox.org")
+#+end_src
+*** priorities
+#+begin_src emacs-lisp
+(setq org-priority-default 5)
+(setq org-priority-lowest 9)
+(setq org-priority-highest 1)
+#+end_src
+** anki
+#+begin_src emacs-lisp
+(use-package anki-editor)
+#+end_src
+
+** proof general
+#+begin_src emacs-lisp
+(use-package proof-general)
+#+end_src
+
+** Gnuplot
+#+begin_src emacs-lisp
+(autoload 'gnuplot-mode "gnuplot" "Gnuplot major mode" t)
+(autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot-mode" t)
+(setq auto-mode-alist (append '(("\\.gp$" . gnuplot-mode)) auto-mode-alist))
+#+end_src
+* TODO
+
+
+    [ ]: create custom mappings
+        - swap chars
+        - open line staying in normal state
+
+
+* IDK
+** TODO: Thu 28 Jan 17:36 2021 
+** Evil
+  - make prev word + insert command ∫
+  - make first char on line + insert command (zi)
+  - make end of wodr + append
+  - make end of prev word
+  - make open new line (above/below) and esc (⊂/U)
+  - make delete current word }
+  - make delete prev word ∃
+  - remap -> . for open commadn line
+  - make some insert mode mappings
+  - [ delete current next WORD
+  - λ prev word
+  - find fix -> for to many mappings
+ - make ctrl-z undo ??
+ - make ctrl-Z redo ??
+** Other
+ - better -> bibliography
+ - magit ?
+ - org-roam -> on (buffer -> for backlinks)
+ - org-noter
+ # org noter
+ # org ref !
+ # all-the-icons-install-fonts
+** possible
+ - gscholar bibtex -> retrieve bib entrys
+   - but iirc -> dont like ui
+ - org roam bibtex -> look into it
+** Evil
+ - evil-leader
+ - evil-surround
+ - evil-org
+ - evil-indent-textobject
+
+projectile ???
+
+
+# start html => häufige seiten
+
+# javascript -> auf firefox => kopieren von link auf org-link anzeigen
+
+
+
+* Try
+#+begin_src elisp
+(defun helm-org-roam (&optional input candidates)
+  (interactive)
+  (require 'org-roam)
+  (helm
+   :input input
+   :sources (list
+             (helm-build-sync-source "Roam: "
+               :must-match nil
+               :fuzzy-match t
+               :candidates (or candidates (org-roam--get-titles))
+               :action
+               '(("Find File" . (lambda (x)
+                                  (--> x
+                                       org-roam-node-from-title-or-alias
+                                       (org-roam-node-visit it t))))
+                 ("Insert link" . (lambda (x)
+                                    (--> x
+                                         org-roam-node-from-title-or-alias
+                                         (insert
+                                          (format
+                                           "[[id:%s][%s]]"
+                                           (org-roam-node-id it)
+                                           (org-roam-node-title it))))))
+                 ("Follow backlinks" . (lambda (x)
+                                         (let ((candidates
+                                                (--> x
+                                                     org-roam-node-from-title-or-alias
+                                                     org-roam-backlinks-get
+                                                     (--map
+                                                      (org-roam-node-title
+                                                       (org-roam-backlink-source-node it))
+                                                      it))))
+                                           (helm-org-roam nil (or candidates (list x))))))))
+             (helm-build-dummy-source
+                 "Create note"
+               :action '(("Capture note" . (lambda (candidate)
+                                             (org-roam-capture-
+                                              :node (org-roam-node-create :title candidate)
+                                              :props '(:finalize find-file)))))))))
+
+#+end_src
+
+
+* sort
+#+begin_src emacs-lisp
+(use-package nix-mode
+  :mode "\\.nix\\'")
+#+end_src
+
+- org-auctex
+- xenops
+- https://www.youtube.com/watch?v=n-AfvuV-bYo
